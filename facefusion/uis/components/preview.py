@@ -1,22 +1,26 @@
-from typing import Any, Dict, List, Optional
 from time import sleep
+from typing import Any, Dict, List, Optional
+
 import cv2
 import gradio
 
 import facefusion.globals
-from facefusion import wording, logger
+from facefusion import logger, wording
 from facefusion.audio import get_audio_frame
 from facefusion.common_helper import get_first
-from facefusion.core import conditional_append_reference_faces
-from facefusion.face_analyser import get_average_face, clear_face_analyser
-from facefusion.face_store import clear_static_faces, get_reference_faces, clear_reference_faces
-from facefusion.typing import Face, FaceSet, AudioFrame, VisionFrame
-from facefusion.vision import get_video_frame, count_video_frame_total, normalize_frame_color, resize_frame_resolution, read_static_image, read_static_images
-from facefusion.filesystem import is_image, is_video, filter_audio_paths
 from facefusion.content_analyser import analyse_frame
+from facefusion.core import conditional_append_reference_faces
+from facefusion.face_analyser import clear_face_analyser, get_average_face
+from facefusion.face_store import (clear_reference_faces, clear_static_faces,
+                                   get_reference_faces)
+from facefusion.filesystem import filter_audio_paths, is_image, is_video
 from facefusion.processors.frame.core import load_frame_processor_module
-from facefusion.uis.typing import ComponentName
+from facefusion.typing import AudioFrame, Face, FaceSet, VisionFrame
 from facefusion.uis.core import get_ui_component, register_ui_component
+from facefusion.uis.typing import ComponentName
+from facefusion.vision import (count_video_frame_total, get_video_frame,
+                               normalize_frame_color, read_static_image,
+                               read_static_images, resize_frame_resolution)
 
 PREVIEW_IMAGE : Optional[gradio.Image] = None
 PREVIEW_FRAME_SLIDER : Optional[gradio.Slider] = None
@@ -181,7 +185,7 @@ def process_preview_frame(reference_faces : FaceSet, source_face : Face, source_
 	target_vision_frame = resize_frame_resolution(target_vision_frame, 640, 640)
 	if analyse_frame(target_vision_frame):
 		return cv2.GaussianBlur(target_vision_frame, (99, 99), 0)
-	for frame_processor in facefusion.globals.frame_processors:
+	for frame_processor in [processor for processor in facefusion.globals.frame_processors if processor != 'frame_enhancer']:
 		frame_processor_module = load_frame_processor_module(frame_processor)
 		logger.disable()
 		if frame_processor_module.pre_process('preview'):
