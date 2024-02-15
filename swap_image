@@ -1,0 +1,13 @@
+#!/bin/bash
+python run.py --target $1 --source $3 --output /Users/midnite/Pictures/FaceSwapped --headless \
+	--execution-providers cpu --execution-thread-count 24 --execution-queue-count 1 \
+	--face-analyser-order best-worst \
+	--face-detector-model retinaface --face-detector-size 640x640 --face-detector-score 0.7 \
+	--face-selector-mode reference --reference-face-position $2 --reference-face-distance 0.15 \
+	--face-mask-types box occlusion region --face-mask-blur 0.2 --face-mask-padding 0 0 \
+	--face-mask-regions skin left-eyebrow right-eyebrow left-eye right-eye eye-glasses nose mouth upper-lip lower-lip \
+	--temp-frame-format png --temp-frame-quality 100 --keep-temp \
+	--output-image-quality 100 --output-video-encoder libx265 --output-video-preset medium --output-video-quality 100 \
+	--frame-processors face_swapper face_enhancer frame_enhancer --face-enhancer-model gfpgan_1.4 \
+	--face-enhancer-blend 80 --face-swapper-model inswapper_128 --frame-enhancer-model real_esrgan_x2plus \
+	--frame-enhancer-blend 60
