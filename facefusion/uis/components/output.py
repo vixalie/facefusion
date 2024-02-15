@@ -1,13 +1,14 @@
-from typing import Tuple, Optional
+from typing import Optional, Tuple
+
 import gradio
 
 import facefusion.globals
 from facefusion import wording
 from facefusion.core import conditional_process
-from facefusion.memory import limit_system_memory
-from facefusion.uis.core import get_ui_component
-from facefusion.normalizer import normalize_output_path
 from facefusion.filesystem import clear_temp, is_image, is_video
+from facefusion.memory import limit_system_memory
+from facefusion.normalizer import normalize_output_path
+from facefusion.uis.core import get_ui_component
 
 OUTPUT_IMAGE : Optional[gradio.Image] = None
 OUTPUT_VIDEO : Optional[gradio.Video] = None
@@ -21,21 +22,22 @@ def render() -> None:
 	global OUTPUT_START_BUTTON
 	global OUTPUT_CLEAR_BUTTON
 
+	with gradio.Row():
+		OUTPUT_START_BUTTON = gradio.Button(
+			value = wording.get('uis.start_button'),
+			variant = 'primary',
+			size = 'sm'
+		)
+		OUTPUT_CLEAR_BUTTON = gradio.Button(
+			value = wording.get('uis.clear_button'),
+			size = 'sm'
+		)
 	OUTPUT_IMAGE = gradio.Image(
 		label = wording.get('uis.output_image_or_video'),
 		visible = False
 	)
 	OUTPUT_VIDEO = gradio.Video(
 		label = wording.get('uis.output_image_or_video')
-	)
-	OUTPUT_START_BUTTON = gradio.Button(
-		value = wording.get('uis.start_button'),
-		variant = 'primary',
-		size = 'sm'
-	)
-	OUTPUT_CLEAR_BUTTON = gradio.Button(
-		value = wording.get('uis.clear_button'),
-		size = 'sm'
 	)
 
 
