@@ -1,18 +1,20 @@
-from typing import Any, Dict
-from functools import lru_cache
 import threading
+from functools import lru_cache
+from typing import Any, Dict
+
 import cv2
 import numpy
 import onnxruntime
 from tqdm import tqdm
 
 import facefusion.globals
-from facefusion import wording
-from facefusion.typing import VisionFrame, ModelValue, Fps
-from facefusion.execution_helper import apply_execution_provider_options
-from facefusion.vision import get_video_frame, count_video_frame_total, read_image, detect_video_fps
-from facefusion.filesystem import resolve_relative_path
+from facefusion import config, wording
 from facefusion.download import conditional_download
+from facefusion.execution_helper import apply_execution_provider_options
+from facefusion.filesystem import resolve_relative_path
+from facefusion.typing import Fps, ModelValue, VisionFrame
+from facefusion.vision import (count_video_frame_total, detect_video_fps,
+                               get_video_frame, read_image)
 
 CONTENT_ANALYSER = None
 THREAD_LOCK : threading.Lock = threading.Lock()
@@ -70,6 +72,9 @@ def prepare_frame(vision_frame : VisionFrame) -> VisionFrame:
 
 
 def analyse_frame(vision_frame : VisionFrame) -> bool:
+	allow_nsfw = config.get_bool_value('misc.allow_nsfw', 'False')
+	if allow_nsfw:
+		return False
 	content_analyser = get_content_analyser()
 	vision_frame = prepare_frame(vision_frame)
 	probability = content_analyser.run(None,
