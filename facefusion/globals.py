@@ -1,6 +1,11 @@
 from typing import List, Optional
 
-from facefusion.typing import LogLevel, VideoMemoryStrategy, FaceSelectorMode, FaceAnalyserOrder, FaceAnalyserAge, FaceAnalyserGender, FaceMaskType, FaceMaskRegion, OutputVideoEncoder, OutputVideoPreset, FaceDetectorModel, FaceRecognizerModel, TempFrameFormat, Padding
+from facefusion.typing import (FaceAnalyserAge, FaceAnalyserGender,
+                               FaceAnalyserOrder, FaceDetectorModel,
+                               FaceMaskRegion, FaceMaskType,
+                               FaceRecognizerModel, FaceSelectorMode, LogLevel,
+                               OutputVideoEncoder, OutputVideoPreset, Padding,
+                               TempFrameFormat, VideoMemoryStrategy)
 
 # general
 source_paths : Optional[List[str]] = None
@@ -10,6 +15,7 @@ output_path : Optional[str] = None
 skip_download : Optional[bool] = None
 headless : Optional[bool] = None
 log_level : Optional[LogLevel] = None
+allow_nsfw : Optional[bool] = None
 # execution
 execution_providers : List[str] = []
 execution_thread_count : Optional[int] = None

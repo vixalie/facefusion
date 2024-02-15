@@ -2,30 +2,40 @@ import os
 
 os.environ['OMP_NUM_THREADS'] = '1'
 
+import shutil
 import signal
 import sys
 import time
 import warnings
-import shutil
+from argparse import ArgumentParser, HelpFormatter
+from time import sleep
+
 import numpy
 import onnxruntime
-from time import sleep
-from argparse import ArgumentParser, HelpFormatter
 
 import facefusion.choices
 import facefusion.globals
-from facefusion.face_analyser import get_one_face, get_average_face
-from facefusion.face_store import get_reference_faces, append_reference_face
-from facefusion import face_analyser, face_masker, content_analyser, config, metadata, logger, wording
-from facefusion.content_analyser import analyse_image, analyse_video
-from facefusion.processors.frame.core import get_frame_processors_modules, load_frame_processor_module
+from facefusion import (config, content_analyser, face_analyser, face_masker,
+                        logger, metadata, wording)
 from facefusion.common_helper import create_metavar, get_first
-from facefusion.execution_helper import encode_execution_providers, decode_execution_providers
-from facefusion.normalizer import normalize_output_path, normalize_padding, normalize_fps
+from facefusion.content_analyser import analyse_image, analyse_video
+from facefusion.execution_helper import (decode_execution_providers,
+                                         encode_execution_providers)
+from facefusion.face_analyser import get_average_face, get_one_face
+from facefusion.face_store import append_reference_face, get_reference_faces
+from facefusion.ffmpeg import (compress_image, extract_frames, merge_video,
+                               replace_audio, restore_audio)
+from facefusion.filesystem import (clear_temp, create_temp, filter_audio_paths,
+                                   get_temp_frame_paths, is_image, is_video,
+                                   list_directory, move_temp)
 from facefusion.memory import limit_system_memory
-from facefusion.filesystem import list_directory, get_temp_frame_paths, create_temp, move_temp, clear_temp, is_image, is_video, filter_audio_paths
-from facefusion.ffmpeg import extract_frames, compress_image, merge_video, restore_audio, replace_audio
-from facefusion.vision import get_video_frame, read_image, read_static_images, pack_resolution, detect_video_resolution, detect_video_fps, create_video_resolutions
+from facefusion.normalizer import (normalize_fps, normalize_output_path,
+                                   normalize_padding)
+from facefusion.processors.frame.core import (get_frame_processors_modules,
+                                              load_frame_processor_module)
+from facefusion.vision import (create_video_resolutions, detect_video_fps,
+                               detect_video_resolution, get_video_frame,
+                               pack_resolution, read_image, read_static_images)
 
 onnxruntime.set_default_logger_severity(3)
 warnings.filterwarnings('ignore', category = UserWarning, module = 'gradio')
@@ -45,6 +55,7 @@ def cli() -> None:
 	group_misc.add_argument('--skip-download', help = wording.get('help.skip_download'), action = 'store_true', default = config.get_bool_value('misc.skip_download'))
 	group_misc.add_argument('--headless', help = wording.get('help.headless'), action = 'store_true', default = config.get_bool_value('misc.headless'))
 	group_misc.add_argument('--log-level', help = wording.get('help.log_level'), default = config.get_str_value('misc.log_level', 'info'), choices = logger.get_log_levels())
+	group_misc.add_argument('--allow-nsfw', help = wording.get('help.allow_nsfw'), default = config.get_bool_value('misc.allow_nsfw', 'False'))
 	# execution
 	execution_providers = encode_execution_providers(onnxruntime.get_available_providers())
 	group_execution = program.add_argument_group('execution')
@@ -116,6 +127,7 @@ def apply_args(program : ArgumentParser) -> None:
 	facefusion.globals.skip_download = args.skip_download
 	facefusion.globals.headless = args.headless
 	facefusion.globals.log_level = args.log_level
+	facefusion.globals.allow_nsfw = args.allow_nsfw
 	# execution
 	facefusion.globals.execution_providers = decode_execution_providers(args.execution_providers)
 	facefusion.globals.execution_thread_count = args.execution_thread_count

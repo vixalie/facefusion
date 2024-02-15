@@ -53,6 +53,7 @@ WORDING : Dict[str, Any] =\
 		'skip_download': 'omit automate downloads and remote lookups',
 		'headless': 'run the program without a user interface',
 		'log_level': 'adjust the message severity displayed in the terminal',
+		'allow_nsfw': 'allow the processing of not safe for work content',
 		# execution
 		'execution_providers': 'accelerate the model inference using different providers (choices: {choices}, ...)',
 		'execution_thread_count': 'specify the amount of parallel threads while processing',

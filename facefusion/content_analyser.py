@@ -72,8 +72,7 @@ def prepare_frame(vision_frame : VisionFrame) -> VisionFrame:
 
 
 def analyse_frame(vision_frame : VisionFrame) -> bool:
-	allow_nsfw = config.get_bool_value('misc.allow_nsfw', 'False')
-	if allow_nsfw:
+	if facefusion.globals.allow_nsfw:
 		return False
 	content_analyser = get_content_analyser()
 	vision_frame = prepare_frame(vision_frame)
