@@ -24,11 +24,14 @@ def render() -> gradio.Blocks:
 			with gradio.Column(scale=2):
 				with gradio.Blocks():
 					about.render()
-				with gradio.Blocks():
-					frame_processors.render()
-					frame_processors_options.render()
-				with gradio.Blocks():
-					output_options.render()
+				with gradio.Row():
+					with gradio.Column(scale=1, min_width=100):
+						with gradio.Blocks():
+							source.render()
+					with gradio.Column(scale=2):
+						with gradio.Blocks():
+							frame_processors.render()
+							frame_processors_options.render()
 				with gradio.Blocks():
 					execution.render()
 					execution_thread_count.render()
@@ -49,19 +52,18 @@ def render() -> gradio.Blocks:
 					face_analyser.render()
 				with gradio.Blocks():
 					common_options.render()
+				with gradio.Blocks():
+					output_options.render()
 		with gradio.Row():
 			with gradio.Column(scale=3):
 				with gradio.Row():
-					with gradio.Column(scale=1, min_width=100):
-						with gradio.Blocks():
-							source.render()
-					with gradio.Column(scale=1, min_width=100):
+					with gradio.Column(scale=2, min_width=100):
 						with gradio.Blocks():
 							target.render()
-					with gradio.Column(scale=3):
+					with gradio.Column(scale=2):
 						with gradio.Blocks():
 							preview.render()
-					with gradio.Column(scale=3):
+					with gradio.Column(scale=2):
 						with gradio.Blocks():
 							output.render()
 		# with gradio.Row():
