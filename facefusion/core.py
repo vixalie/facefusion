@@ -20,6 +20,8 @@ from facefusion.common_helper import create_metavar, get_first
 from facefusion.content_analyser import analyse_image, analyse_video
 from facefusion.execution import (decode_execution_providers,
                                   encode_execution_providers)
+from facefusion.face_analyser import get_average_face, get_one_face
+from facefusion.face_store import append_reference_face, get_reference_faces
 from facefusion.ffmpeg import (copy_image, extract_frames, finalize_image,
                                merge_video, replace_audio, restore_audio)
 from facefusion.filesystem import (clear_temp, create_temp, filter_audio_paths,
