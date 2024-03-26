@@ -39,7 +39,8 @@ from facefusion.vision import (create_image_resolutions,
                                detect_video_resolution, get_video_frame,
                                pack_resolution, read_image, read_static_images,
                                restrict_image_resolution, restrict_video_fps,
-                               restrict_video_resolution, unpack_resolution)
+                               restrict_video_resolution,
+                               scale_image_resolution, unpack_resolution)
 
 onnxruntime.set_default_logger_severity(3)
 warnings.filterwarnings('ignore', category = UserWarning, module = 'gradio')
@@ -100,6 +101,7 @@ def cli() -> None:
 	group_output_creation = program.add_argument_group('output creation')
 	group_output_creation.add_argument('--output-image-quality', help = wording.get('help.output_image_quality'), type = int, default = config.get_int_value('output_creation.output_image_quality', '80'), choices = facefusion.choices.output_image_quality_range, metavar = create_metavar(facefusion.choices.output_image_quality_range))
 	group_output_creation.add_argument('--output-image-resolution', help = wording.get('help.output_image_resolution'), default = config.get_str_value('output_creation.output_image_resolution'))
+	group_output_creation.add_argument('--output-resolution-scale', help = wording.get('help.output_image_resolution_scale'), default = config.get_int_value('output_creation.output_resolution_scale', '1'))
 	group_output_creation.add_argument('--output-video-encoder', help = wording.get('help.output_video_encoder'), default = config.get_str_value('output_creation.output_video_encoder', 'libx264'), choices = facefusion.choices.output_video_encoders)
 	group_output_creation.add_argument('--output-video-preset', help = wording.get('help.output_video_preset'), default = config.get_str_value('output_creation.output_video_preset', 'veryfast'), choices = facefusion.choices.output_video_presets)
 	group_output_creation.add_argument('--output-video-quality', help = wording.get('help.output_video_quality'), type = int, default = config.get_int_value('output_creation.output_video_quality', '80'), choices = facefusion.choices.output_video_quality_range, metavar = create_metavar(facefusion.choices.output_video_quality_range))
@@ -167,12 +169,15 @@ def apply_args(program : ArgumentParser) -> None:
 	facefusion.globals.keep_temp = args.keep_temp
 	# output creation
 	facefusion.globals.output_image_quality = args.output_image_quality
+	facefusion.globals.output_resolution_scale = args.output_resolution_scale
 	if is_image(args.target_path):
 		output_image_resolution = detect_image_resolution(args.target_path)
 		output_image_resolutions = create_image_resolutions(output_image_resolution)
 		if args.output_image_resolution in output_image_resolutions:
 			facefusion.globals.output_image_resolution = args.output_image_resolution
 		else:
+			if output_image_resolution is not None:
+				output_image_resolution = scale_image_resolution(output_image_resolution, args.output_resolution_scale)
 			facefusion.globals.output_image_resolution = pack_resolution(output_image_resolution)
 	facefusion.globals.output_video_encoder = args.output_video_encoder
 	facefusion.globals.output_video_preset = args.output_video_preset

@@ -1,12 +1,13 @@
-from typing import Optional, List, Tuple
 from functools import lru_cache
+from typing import List, Optional, Tuple
+
 import cv2
 import numpy
 from cv2.typing import Size
 
-from facefusion.typing import VisionFrame, Resolution, Fps
 from facefusion.choices import image_template_sizes, video_template_sizes
 from facefusion.filesystem import is_image, is_video
+from facefusion.typing import Fps, Resolution, VisionFrame
 
 
 @lru_cache(maxsize = 128)
@@ -40,6 +41,11 @@ def detect_image_resolution(image_path : str) -> Optional[Resolution]:
 		height, width = image.shape[:2]
 		return width, height
 	return None
+
+
+def scale_image_resolution(base_resolution: Resolution, scale: Optional[int]) -> Resolution:
+	resolved_scale = scale if scale is not None else 1
+	return base_resolution[0] * resolved_scale, base_resolution[1] * resolved_scale
 
 
 def restrict_image_resolution(image_path : str, resolution : Resolution) -> Resolution:
