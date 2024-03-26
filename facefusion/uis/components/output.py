@@ -31,6 +31,12 @@ def render() -> None:
 			variant = 'primary',
 			size = 'sm'
 		)
+		OUTPUT_STOP_BUTTON = gradio.Button(
+			value = wording.get('uis.stop_button'),
+			variant = 'primary',
+			size = 'sm',
+			visible = False
+		)
 		OUTPUT_CLEAR_BUTTON = gradio.Button(
 			value = wording.get('uis.clear_button'),
 			size = 'sm'
@@ -42,21 +48,21 @@ def render() -> None:
 	OUTPUT_VIDEO = gradio.Video(
 		label = wording.get('uis.output_image_or_video')
 	)
-	OUTPUT_START_BUTTON = gradio.Button(
-		value = wording.get('uis.start_button'),
-		variant = 'primary',
-		size = 'sm'
-	)
-	OUTPUT_STOP_BUTTON = gradio.Button(
-		value = wording.get('uis.stop_button'),
-		variant = 'primary',
-		size = 'sm',
-		visible = False
-	)
-	OUTPUT_CLEAR_BUTTON = gradio.Button(
-		value = wording.get('uis.clear_button'),
-		size = 'sm'
-	)
+#	OUTPUT_START_BUTTON = gradio.Button(
+#		value = wording.get('uis.start_button'),
+#		variant = 'primary',
+#		size = 'sm'
+#	)
+#	OUTPUT_STOP_BUTTON = gradio.Button(
+#		value = wording.get('uis.stop_button'),
+#		variant = 'primary',
+#		size = 'sm',
+#		visible = False
+#	)
+#	OUTPUT_CLEAR_BUTTON = gradio.Button(
+#		value = wording.get('uis.clear_button'),
+#		size = 'sm'
+#	)
 
 
 def listen() -> None:
