@@ -1,11 +1,12 @@
 import os
-import subprocess
 import platform
 import ssl
+import subprocess
 import urllib.request
-from typing import List
 from concurrent.futures import ThreadPoolExecutor
 from functools import lru_cache
+from typing import List
+
 from tqdm import tqdm
 
 import facefusion.globals
@@ -40,10 +41,11 @@ def get_download_size(url : str) -> int:
 		response = urllib.request.urlopen(url, timeout = 10)
 		return int(response.getheader('Content-Length'))
 	except (OSError, ValueError):
-		return 0
+		return -1
 
 
 def is_download_done(url : str, file_path : str) -> bool:
 	if is_file(file_path):
-		return get_download_size(url) == os.path.getsize(file_path)
+		remote_size = get_download_size(url)
+		return remote_size == -1 or remote_size == os.path.getsize(file_path)
 	return False
