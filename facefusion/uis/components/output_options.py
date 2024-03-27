@@ -127,9 +127,7 @@ def remote_update() -> Tuple[gradio.Slider, gradio.Dropdown, gradio.Dropdown, gr
 	if is_image(facefusion.globals.target_path):
 		output_image_resolution = detect_image_resolution(facefusion.globals.target_path)
 		output_image_resolutions = create_image_resolutions(output_image_resolution)
-		print(facefusion.globals.output_resolution_scale)
 		scaled_image_resolution = scale_image_resolution(output_image_resolution, facefusion.globals.output_resolution_scale)
-		print(scaled_image_resolution)
 		facefusion.globals.output_image_resolution = pack_resolution(scaled_image_resolution)
 		return gradio.Slider(visible = True), gradio.Dropdown(visible = True, value = facefusion.globals.output_image_resolution, choices = output_image_resolutions), gradio.Dropdown(visible = False), gradio.Dropdown(visible = False), gradio.Slider(visible = False), gradio.Dropdown(visible = False, value = None, choices = None), gradio.Slider(visible = False, value = None)
 	if is_video(facefusion.globals.target_path):
