@@ -57,7 +57,6 @@ def render() -> None:
 		maximum = facefusion.choices.output_image_quality_range[-1],
 		visible = is_image(facefusion.globals.target_path)
 	)
-	print(facefusion.globals.output_image_resolution)
 	OUTPUT_IMAGE_RESOLUTION_DROPDOWN = gradio.Dropdown(
 		label = wording.get('uis.output_image_resolution_dropdown'),
 		choices = output_image_resolutions,
