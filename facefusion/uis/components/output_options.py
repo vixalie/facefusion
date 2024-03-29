@@ -35,11 +35,13 @@ def render() -> None:
 	global OUTPUT_VIDEO_QUALITY_SLIDER
 	global OUTPUT_VIDEO_FPS_SLIDER
 
+	scaled_image_resolution = ''
 	output_image_resolutions = []
 	output_video_resolutions = []
 	if is_image(facefusion.globals.target_path):
 		output_image_resolution = detect_image_resolution(facefusion.globals.target_path)
 		output_image_resolutions = create_image_resolutions(output_image_resolution)
+		scaled_image_resolution = scale_image_resolution(output_image_resolution, facefusion.globals.output_resolution_scale)
 	if is_video(facefusion.globals.target_path):
 		output_video_resolution = detect_video_resolution(facefusion.globals.target_path)
 		output_video_resolutions = create_video_resolutions(output_video_resolution)
@@ -60,7 +62,7 @@ def render() -> None:
 	OUTPUT_IMAGE_RESOLUTION_DROPDOWN = gradio.Dropdown(
 		label = wording.get('uis.output_image_resolution_dropdown'),
 		choices = output_image_resolutions,
-		value = facefusion.globals.output_image_resolution,
+		value = scaled_image_resolution,
 		visible = is_image(facefusion.globals.target_path)
 	)
 	OUTPUT_VIDEO_ENCODER_DROPDOWN = gradio.Dropdown(
@@ -126,8 +128,8 @@ def remote_update() -> Tuple[gradio.Slider, gradio.Dropdown, gradio.Dropdown, gr
 	if is_image(facefusion.globals.target_path):
 		output_image_resolution = detect_image_resolution(facefusion.globals.target_path)
 		output_image_resolutions = create_image_resolutions(output_image_resolution)
-		scaled_image_resolution = scale_image_resolution(output_image_resolution, facefusion.globals.output_resolution_scale)
-		facefusion.globals.output_image_resolution = pack_resolution(scaled_image_resolution)
+		# scaled_image_resolution = scale_image_resolution(output_image_resolution, facefusion.globals.output_resolution_scale)
+		facefusion.globals.output_image_resolution = pack_resolution(output_image_resolution)
 		return gradio.Slider(visible = True), gradio.Dropdown(visible = True, value = facefusion.globals.output_image_resolution, choices = output_image_resolutions), gradio.Dropdown(visible = False), gradio.Dropdown(visible = False), gradio.Slider(visible = False), gradio.Dropdown(visible = False, value = None, choices = None), gradio.Slider(visible = False, value = None)
 	if is_video(facefusion.globals.target_path):
 		output_video_resolution = detect_video_resolution(facefusion.globals.target_path)
