@@ -3,7 +3,6 @@ import platform
 import ssl
 import subprocess
 import urllib.request
-from concurrent.futures import ThreadPoolExecutor
 from functools import lru_cache
 from typing import List
 
@@ -18,9 +17,6 @@ if platform.system().lower() == 'darwin':
 
 
 def conditional_download(download_directory_path : str, urls : List[str]) -> None:
-	with ThreadPoolExecutor() as executor:
-		for url in urls:
-			executor.submit(get_download_size, url)
 	for url in urls:
 		download_file_path = os.path.join(download_directory_path, os.path.basename(url))
 		initial_size = os.path.getsize(download_file_path) if is_file(download_file_path) else 0
