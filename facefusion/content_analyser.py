@@ -10,6 +10,7 @@ from tqdm import tqdm
 
 import facefusion.globals
 from facefusion import process_manager, wording
+from facefusion.download import conditional_download
 from facefusion.execution import apply_execution_provider_options
 from facefusion.filesystem import is_file, resolve_relative_path
 from facefusion.typing import Fps, ModelSet, ModelValue, VisionFrame
